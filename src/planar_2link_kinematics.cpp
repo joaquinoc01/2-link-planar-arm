@@ -1,12 +1,12 @@
 #include <iostream>
 #include "2_link.hpp"
 
-Planar2LinkArm::Planar2LinkArm(double l1, double l2)
+Planar2LinkKinematics::Planar2LinkKinematics(double l1, double l2)
     : m_l1{ l1 }, m_l2{ l2 }
 {
 }
 
-Eigen::Vector2d Planar2LinkArm::forwardKinematics(double theta1, double theta2)
+Eigen::Vector2d Planar2LinkKinematics::forwardKinematics(double theta1, double theta2)
 {
     Eigen::Vector2d end_effector{};
 
@@ -17,7 +17,7 @@ Eigen::Vector2d Planar2LinkArm::forwardKinematics(double theta1, double theta2)
     return end_effector;
 }
 
-std::vector<Eigen::Vector2d> Planar2LinkArm::inverseKinematics(double x, double y)
+std::vector<Eigen::Vector2d> Planar2LinkKinematics::inverseKinematics(double x, double y)
 {
     std::vector<Eigen::Vector2d> solutions;
 
@@ -51,7 +51,7 @@ std::vector<Eigen::Vector2d> Planar2LinkArm::inverseKinematics(double x, double 
     return solutions;
 }
 
-void Planar2LinkArm::jacobian(double theta1, double theta2)
+void Planar2LinkKinematics::jacobian(double theta1, double theta2)
 {
     // The jacobian is calcualted by differentiating the forward kinematics wrt the angles
     m_jacobian(0, 0) = -m_l1 * std::sin( theta1 ) - m_l2 * std::sin( theta1 + theta2 );
@@ -60,14 +60,14 @@ void Planar2LinkArm::jacobian(double theta1, double theta2)
     m_jacobian(1, 1) = m_l2 * std::cos( theta1 + theta2 );
 }
 
-bool Planar2LinkArm::isSingular(const Eigen::Matrix2d& jacobian)
+bool Planar2LinkKinematics::isSingular(const Eigen::Matrix2d& jacobian)
 {
     return ((jacobian.determinant() < 1e-3) ? true : false);
 }
 
 int main()
 {
-    Planar2LinkArm arm(1.0, 1.0); // both links = 1m
+    Planar2LinkKinematics arm(1.0, 1.0); // both links = 1m
     double theta1 = M_PI / 4.0;   // 45 degrees
     double theta2 = M_PI / 4.0;   // 45 degrees
 

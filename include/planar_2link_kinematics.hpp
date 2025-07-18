@@ -1,9 +1,9 @@
 #include <Eigen/Dense>
 
-class Planar2LinkArm
+class Planar2LinkKinematics
 {
 public:
-    Planar2LinkArm(double l1, double l2);
+    Planar2LinkKinematics(double l1, double l2);
 
     Eigen::Vector2d forwardKinematics(double theta1, double theta2);
     std::vector<Eigen::Vector2d> inverseKinematics(double x, double y);
