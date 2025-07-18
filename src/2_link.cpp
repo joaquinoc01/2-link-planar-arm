@@ -53,15 +53,11 @@ std::vector<Eigen::Vector2d> Planar2LinkArm::inverseKinematics(double x, double 
 
 Eigen::Matrix2d Planar2LinkArm::jacobian(double theta1, double theta2)
 {
-    Eigen::Matrix2d jacobian{};
-
     // The jacobian is calcualted by differentiating the forward kinematics wrt the angles
-    jacobian(0, 0) = -m_l1 * std::sin( theta1 ) - m_l2 * std::sin( theta1 + theta2 );
-    jacobian(0, 1) = -m_l2 * std::sin( theta1 + theta2 );
-    jacobian(1, 0) = m_l1 * std::cos( theta1 ) + m_l2 * std::cos( theta1 + theta2 );
-    jacobian(1, 1) = m_l2 * std::cos( theta1 + theta2 );
-
-    return jacobian;
+    m_jacobian(0, 0) = -m_l1 * std::sin( theta1 ) - m_l2 * std::sin( theta1 + theta2 );
+    m_jacobian(0, 1) = -m_l2 * std::sin( theta1 + theta2 );
+    m_jacobian(1, 0) = m_l1 * std::cos( theta1 ) + m_l2 * std::cos( theta1 + theta2 );
+    m_jacobian(1, 1) = m_l2 * std::cos( theta1 + theta2 );
 }
 
 bool Planar2LinkArm::isSingular(const Eigen::Matrix2d& jacobian)
@@ -83,10 +79,14 @@ int main()
         double theta1_deg = sol[0] * 180.0 / M_PI;
         double theta2_deg = sol[1] * 180.0 / M_PI;
         std::cout << "Theta1: " << theta1_deg << " deg, "
-                << "Theta2: " << theta2_deg << " deg" << std::endl;
+                  << "Theta2: " << theta2_deg << " deg" << std::endl;
     }
 
-    Eigen::Matrix2d J = arm.jacobian(theta1, theta2);
+    // Update the internal jacobian matrix inside the object
+    arm.jacobian(theta1, theta2);
+
+    // Access the updated jacobian via getter
+    Eigen::Matrix2d J = arm.getJacobian();
     std::cout << "Jacobian:\n" << J << std::endl;
 
     if (arm.isSingular(J))

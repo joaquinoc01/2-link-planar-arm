@@ -7,9 +7,12 @@ public:
 
     Eigen::Vector2d forwardKinematics(double theta1, double theta2);
     std::vector<Eigen::Vector2d> inverseKinematics(double x, double y);
-    Eigen::Matrix2d jacobian(double theta1, double theta2);
+    void jacobian(double theta1, double theta2);
     bool isSingular(const Eigen::Matrix2d& jacobian);
 
+    Eigen::Matrix2d getJacobian() const { return m_jacobian; }
+
 private:
-    double m_l1, m_l2;    
+    double m_l1, m_l2;
+    Eigen::Matrix2d m_jacobian;
 };
