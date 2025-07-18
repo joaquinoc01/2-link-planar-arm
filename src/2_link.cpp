@@ -51,7 +51,7 @@ std::vector<Eigen::Vector2d> Planar2LinkArm::inverseKinematics(double x, double 
     return solutions;
 }
 
-Eigen::Matrix2d Planar2LinkArm::jacobian(double theta1, double theta2)
+void Planar2LinkArm::jacobian(double theta1, double theta2)
 {
     // The jacobian is calcualted by differentiating the forward kinematics wrt the angles
     m_jacobian(0, 0) = -m_l1 * std::sin( theta1 ) - m_l2 * std::sin( theta1 + theta2 );
@@ -62,7 +62,7 @@ Eigen::Matrix2d Planar2LinkArm::jacobian(double theta1, double theta2)
 
 bool Planar2LinkArm::isSingular(const Eigen::Matrix2d& jacobian)
 {
-    return ( (jacobian.determinant() < 1e-3) ? true : false);
+    return ((jacobian.determinant() < 1e-3) ? true : false);
 }
 
 int main()
@@ -93,6 +93,11 @@ int main()
         std::cout << "Warning: Jacobian is close to singular!" << std::endl;
     else
         std::cout << "Jacobian is non-singular." << std::endl;
+
+    Eigen::Vector2d joint_velocities{0.1, 0.2};  // radians per second for joint1 and joint2
+    Eigen::Vector2d ee_velocity = arm.endEffectorVelocity(joint_velocities);
+
+    std::cout << "End-effector velocity: " << ee_velocity.transpose() << " m/s" << std::endl;
 
     return 0;
 }

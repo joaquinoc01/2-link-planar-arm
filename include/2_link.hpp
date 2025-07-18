@@ -11,6 +11,7 @@ public:
     bool isSingular(const Eigen::Matrix2d& jacobian);
 
     Eigen::Matrix2d getJacobian() const { return m_jacobian; }
+    Eigen::Vector2d endEffectorVelocity(const Eigen::Vector2d& joint_vels) { return m_jacobian * joint_vels; }
 
 private:
     double m_l1, m_l2;
