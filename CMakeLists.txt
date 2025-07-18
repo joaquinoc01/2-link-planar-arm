@@ -11,4 +11,4 @@ find_package(Eigen3 REQUIRED)
 include_directories(include ${EIGEN3_INCLUDE_DIR})
 
 # Source
-add_executable(planar_arm src/2_link.cpp)
+add_executable(planar_arm src/planar_2link_kinematics.cpp)
