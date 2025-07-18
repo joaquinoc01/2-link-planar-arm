@@ -1,5 +1,5 @@
 #include <iostream>
-#include "2_link.hpp"
+#include "planar_2link_kinematics.hpp"
 
 Planar2LinkKinematics::Planar2LinkKinematics(double l1, double l2)
     : m_l1{ l1 }, m_l2{ l2 }

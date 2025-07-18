@@ -1,4 +1,8 @@
+#ifndef PLANAR_2LINK_KINEMATICS_HPP
+#define PLANAR_2LINK_KINEMATICS_HPP
+
 #include <Eigen/Dense>
+#include <vector>
 
 class Planar2LinkKinematics
 {
@@ -17,3 +21,5 @@ private:
     double m_l1, m_l2;
     Eigen::Matrix2d m_jacobian;
 };
+
+#endif // PLANAR_2LINK_KINEMATICS_HPP
