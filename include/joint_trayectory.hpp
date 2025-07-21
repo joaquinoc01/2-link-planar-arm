@@ -11,7 +11,7 @@ enum class InterpolationType {
 class JointTrayectory
 {
 public:
-    JointTrayectory(const Eigen::Vector2d& start, const Eigen::Vector2d& end, double duration);
+    JointTrayectory(const Eigen::Vector2d& start, const Eigen::Vector2d& end, double duration, InterpolationType type);
 
     Eigen::Vector2d getPosition(double t) const;
     Eigen::Vector2d getVelocity(double t) const;
