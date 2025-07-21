@@ -6,7 +6,7 @@ Planar2LinkKinematics::Planar2LinkKinematics(double l1, double l2)
 {
 }
 
-Eigen::Vector2d Planar2LinkKinematics::forwardKinematics(double theta1, double theta2)
+Eigen::Vector2d Planar2LinkKinematics::forwardKinematics(double theta1, double theta2) const
 {
     Eigen::Vector2d end_effector{};
 
@@ -63,41 +63,4 @@ void Planar2LinkKinematics::jacobian(double theta1, double theta2)
 bool Planar2LinkKinematics::isSingular(const Eigen::Matrix2d& jacobian)
 {
     return ((jacobian.determinant() < 1e-3) ? true : false);
-}
-
-int main()
-{
-    Planar2LinkKinematics arm(1.0, 1.0); // both links = 1m
-    double theta1 = M_PI / 4.0;   // 45 degrees
-    double theta2 = M_PI / 4.0;   // 45 degrees
-
-    Eigen::Vector2d pos = arm.forwardKinematics(theta1, theta2);
-    std::cout << "End-effector position: " << pos.transpose() << std::endl;
-
-    auto ik_solutions = arm.inverseKinematics(1.0, 1.0);
-    for (const auto& sol : ik_solutions) {
-        double theta1_deg = sol[0] * 180.0 / M_PI;
-        double theta2_deg = sol[1] * 180.0 / M_PI;
-        std::cout << "Theta1: " << theta1_deg << " deg, "
-                  << "Theta2: " << theta2_deg << " deg" << std::endl;
-    }
-
-    // Update the internal jacobian matrix inside the object
-    arm.jacobian(theta1, theta2);
-
-    // Access the updated jacobian via getter
-    Eigen::Matrix2d J = arm.getJacobian();
-    std::cout << "Jacobian:\n" << J << std::endl;
-
-    if (arm.isSingular(J))
-        std::cout << "Warning: Jacobian is close to singular!" << std::endl;
-    else
-        std::cout << "Jacobian is non-singular." << std::endl;
-
-    Eigen::Vector2d joint_velocities{0.1, 0.2};  // radians per second for joint1 and joint2
-    Eigen::Vector2d ee_velocity = arm.endEffectorVelocity(joint_velocities);
-
-    std::cout << "End-effector velocity: " << ee_velocity.transpose() << " m/s" << std::endl;
-
-    return 0;
 }

@@ -9,7 +9,7 @@ class Planar2LinkKinematics
 public:
     Planar2LinkKinematics(double l1, double l2);
 
-    Eigen::Vector2d forwardKinematics(double theta1, double theta2);
+    Eigen::Vector2d forwardKinematics(double theta1, double theta2) const;
     std::vector<Eigen::Vector2d> inverseKinematics(double x, double y);
     void jacobian(double theta1, double theta2);
     bool isSingular(const Eigen::Matrix2d& jacobian);
