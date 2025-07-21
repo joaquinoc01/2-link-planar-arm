@@ -3,6 +3,11 @@
 
 #include <Eigen/Dense>
 
+enum class InterpolationType {
+    Linear,
+    Cubic
+};
+
 class JointTrayectory
 {
 public:
@@ -14,7 +19,7 @@ public:
 private:
     Eigen::Vector2d m_q0, m_qf;
     double m_T;
-
+    InterpolationType m_type;
 };
 
 #endif // JOINT_TRAYECTORY_HPP
