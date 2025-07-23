@@ -3,6 +3,7 @@
 
 #include "joint_trayectory.hpp"
 #include "planar_2link_kinematics.hpp"
+#include "collision_checker.hpp"
 
 int main()
 {
@@ -54,6 +55,30 @@ int main()
         std::cout << "\t";
         printVec2(vel_cub);
         std::cout << "\n";
+    }
+
+    std::cout << "\n--- Collision Checker Tests ---\n";
+
+    Planar2LinkCollisionChecker collisionChecker(kinematics);
+
+    // Add some obstacles
+    collisionChecker.addObstacle(Eigen::Vector2d{0.5, 0.0}, 0.1);  // Near first link
+    collisionChecker.addObstacle(Eigen::Vector2d{1.5, 0.0}, 0.1);  // Near second link
+    collisionChecker.addObstacle(Eigen::Vector2d{2.0, 2.0}, 0.2);  // Far away, no collision
+
+    // Test joint configurations
+    std::vector<std::pair<Eigen::Vector2d, std::string>> testCases = {
+        {{0.0, 0.0}, "Arm stretched out along x-axis"},
+        {{M_PI / 4, M_PI / 4}, "Arm bent at 45 degrees"},
+        {{M_PI / 2, 0.0}, "Arm pointing straight up first link"},
+        {{M_PI / 2, M_PI / 2}, "Arm bent upward fully"},
+    };
+
+    for (const auto& [joint_angles, description] : testCases)
+    {
+        bool noCollision = collisionChecker.isNoCollision(joint_angles);
+        std::cout << description << ": "
+                  << (noCollision ? "No Collision" : "Collision Detected") << "\n";
     }
 
     return 0;
