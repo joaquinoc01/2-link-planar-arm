@@ -5,6 +5,7 @@
 #include "joint_trayectory.hpp"
 #include "planar_2link_kinematics.hpp"
 #include "collision_checker.hpp"
+#include "controller.hpp"
 
 void runKinematicsTests()
 {
@@ -91,11 +92,32 @@ void runCollisionCheckerTests()
     }
 }
 
+void runControlTests()
+{
+    std::cout << "\n--- Joint Space Controller Test ---\n";
+
+    Eigen::Vector2d Kp{10.0, 10.0};
+    Eigen::Vector2d Kd{2.0, 2.0};
+
+    JointSpaceController controller(Kp, Kd);
+
+    Eigen::Vector2d q_des{M_PI / 4, M_PI / 3};
+    Eigen::Vector2d qd_des{0.0, 0.0};
+
+    Eigen::Vector2d q{M_PI / 6, M_PI / 6};
+    Eigen::Vector2d qd{0.1, -0.1};
+
+    Eigen::Vector2d control = controller.computeControl(q_des, qd_des, q, qd);
+
+    std::cout << "Control torques: [" << control[0] << ", " << control[1] << "]\n";
+}
+
 int main()
 {
     runKinematicsTests();
     runTrajectoryTests();
     runCollisionCheckerTests();
+    runControlTests();
 
     return 0;
 }
