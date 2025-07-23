@@ -16,6 +16,8 @@ public:
 
     Eigen::Matrix2d getJacobian() const { return m_jacobian; }
     Eigen::Vector2d endEffectorVelocity(const Eigen::Vector2d& joint_vels) { return m_jacobian * joint_vels; }
+    double l1() const { return m_l1; }
+    double l2() const { return m_l2; }
 
 private:
     double m_l1, m_l2;
