@@ -27,25 +27,32 @@ bool Planar2LinkCollisionChecker::isNoCollision(const Eigen::Vector2d& joint_ang
         m_kinematics.l1() * std::sin(joint_angles[0])
     };
 
+    Eigen::Vector2d A {0.0, 0.0};
+
     // We calculate now the distance between the segments (links) and the obstacles
-    Eigen::Vector2d AB { B }; // x0, y0 is 0, 0
-    Eigen::Vector2d AC { C };
-    
-    // Project AC onto AB
-    double t = (AC.dot(AB)) / AB.squaredNorm();
+    Eigen::Vector2d AB { B - A };
+    Eigen::Vector2d AC { C - A };
+    Eigen::Vector2d BC { C - B };
 
-    // Clamp t to [0, 1]
-    double t_clamp = std::max(0.0, std::min(1.0, t));
-
-    // Find the closest point on the segment
-    double P = t_clamp * AB;
-
-    // Euclidean distance from C to P
-    double d = (C - P).norm();
+    Eigen::Vector2d AO {};
+    Eigen::Vector2d BO {};
+    Eigen::Vector2d closest {};
 
     for (const auto& obstacle : m_obstacles)
     {
+        AO = obstacle.center - A;
+        double t1 = AO.dot(AB) / AB.squaredNorm();
+        double t1_clamp = std::clamp(t1, 0.0, 1.0);
+        closest = A + t1_clamp * AB;
+        if ((obstacle.center - closest).norm() < obstacle.radius)
+            return false;
 
+        BO = obstacle.center - B;
+        double t2 = BO.dot(BC) / BC.squaredNorm();
+        double t2_clamp = std::clamp(t2, 0.0, 1.0);
+        closest = B + t2_clamp * BC;
+        if ((obstacle.center - closest).norm() < obstacle.radius)
+            return false;
     }
-
+    return true;
 }
