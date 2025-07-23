@@ -14,6 +14,7 @@ include_directories(include)
 add_library(arm_lib
     src/planar_2link_kinematics.cpp
     src/joint_trayectory.cpp
+    src/collision_checker.cpp
 )
 
 # Link Eigen to the library
