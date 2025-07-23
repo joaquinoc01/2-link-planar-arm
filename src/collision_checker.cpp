@@ -2,8 +2,8 @@
 
 #include "collision_checker.hpp"
 
-Planar2LinkCollisionChecker::Planar2LinkCollisionChecker(double l1, double l2)
-    : m_l1{ l1 }, m_l2{ l2 }
+Planar2LinkCollisionChecker::Planar2LinkCollisionChecker(Planar2LinkKinematics kinematics)
+    : m_kinematics{ kinematics }
 {
 }
 
