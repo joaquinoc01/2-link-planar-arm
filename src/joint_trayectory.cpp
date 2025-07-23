@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "joint_trayectory.hpp"
 #include "planar_2link_kinematics.hpp"
 

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "collision_checker.hpp"
 
 Planar2LinkCollisionChecker::Planar2LinkCollisionChecker(Planar2LinkKinematics kinematics)
