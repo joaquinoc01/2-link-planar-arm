@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <fstream>
 
 #include "joint_trayectory.hpp"
 #include "planar_2link_kinematics.hpp"
@@ -112,12 +113,56 @@ void runControlTests()
     std::cout << "Control torques: [" << control[0] << ", " << control[1] << "]\n";
 }
 
+void runControlSimulation()
+{
+    std::cout << "\n--- Joint Space Control Simulation ---\n";
+
+    Eigen::Vector2d start{0.0, 0.0};
+    Eigen::Vector2d goal{M_PI / 2, M_PI / 2};
+    double duration = 2.0;
+
+    JointTrayectory trajectory(start, goal, duration, InterpolationType::Cubic);
+    JointSpaceController controller(Eigen::Vector2d{100.0, 100.0}, Eigen::Vector2d{20.0, 20.0});
+
+    Eigen::Vector2d q = start;
+    Eigen::Vector2d qd = Eigen::Vector2d::Zero();
+    double dt = 0.01;
+
+    std::ofstream file("control_simulation.csv");
+    file << "time,q1,q2,q1_des,q2_des\n";
+
+    for (double t = 0.0; t <= duration; t += dt)
+    {
+        Eigen::Vector2d q_des = trajectory.getPosition(t);
+        Eigen::Vector2d qd_des = trajectory.getVelocity(t);
+        Eigen::Vector2d tau = controller.computeControl(q_des, qd_des, q, qd);
+
+        // Simplified dynamics: assume torque = acceleration
+        Eigen::Vector2d qdd = tau;
+        qd += qdd * dt;
+        q += qd * dt;
+
+        file << t << "," << q[0] << "," << q[1] << ","
+             << q_des[0] << "," << q_des[1] << "\n";
+
+        if (static_cast<int>(t * 100) % 20 == 0) // print every 0.2s
+        {
+            std::cout << "t = " << std::fixed << std::setprecision(2) << t
+                      << " | q: [" << q[0] << ", " << q[1] << "]"
+                      << " | q_des: [" << q_des[0] << ", " << q_des[1] << "]\n";
+        }
+    }
+
+    file.close();
+}
+
 int main()
 {
     runKinematicsTests();
     runTrajectoryTests();
     runCollisionCheckerTests();
     runControlTests();
+    runControlSimulation();
 
     return 0;
 }
